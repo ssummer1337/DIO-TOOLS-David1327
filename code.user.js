@@ -2,7 +2,7 @@
 // @name		DIO-TOOLS-David1327
 // @name:fr		DIO-TOOLS-David1327
 // @namespace	https://www.tuto-de-david1327.com/pages/info/dio-tools-david1327.html
-// @version		4.33
+// @version		4.33.1
 // @author		DIONY (changes and bug fixes by David1327)
 // @description Version 2023. DIO-Tools + Quack is a small extension for the browser game Grepolis. (counter, displays, smilies, trade options, changes to the layout)
 // @description:FR Version 2023. DIO-Tools + Quack est une petite extension du jeu par navigateur Grepolis. (compteur, affichages, smileys, options commerciales, modifications de la mise en page)
@@ -6209,8 +6209,8 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
     }
 
     /*******************************************************************************************************************************
-     * ● Recruiting Trade
-     * *****************************************************************************************************************************/
+  * ● Recruiting Trade
+  * *****************************************************************************************************************************/
     try {
         var trade_count = 0, unit = "FS", unit2 = "", percent = "0.0"; // Recruiting Trade
         if (typeof (uw.GameData.units.attack_ship) == "undefined") { unit2 = "Attack ship"; setTimeout(() => { unit2 = uw.GameData.units.attack_ship.name }, 200); } else unit2 = uw.GameData.units.attack_ship.name;
@@ -6325,8 +6325,8 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                     '<div class="option" name="0.02">&nbsp;&nbsp;2%</div>' +
                     '<div class="option" name="0.04">&nbsp;&nbsp;4%</div>' +
                     '<div class="option" name="0.05">&nbsp;&nbsp;5%</div>' +
-                    '<div class="option" name="0.06">&nbsp;&nbsp;6%</div>' +
-                    '<div class="option" name="0.08">&nbsp;&nbsp;8%</div>' +
+                    //'<div class="option" name="0.06">&nbsp;&nbsp;6%</div>' +
+                    //'<div class="option" name="0.08">&nbsp;&nbsp;8%</div>' +
                     '<div class="option" name="0.10">10%</div>' +
                     '<div class="option" name="0.14">14%</div>' +
                     '<div class="option" name="0.17">17%</div>' +
@@ -6334,6 +6334,9 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                     '<div class="option" name="0.25">25%</div>' +
                     '<div class="option" name="0.33">33%</div>' +
                     '<div class="option" name="0.50">50%</div>' +
+                    '<div class="option" name="0.55">65%</div>' +
+                    '<div class="option" name="0.85">85%</div>' +
+                    '<div class="option" name="1">100%</div>' +
                     '</div></div>');
 
                 $(wndID + ".dio_rec_trade [name='" + unit + "']").toggleClass("sel");
@@ -6341,17 +6344,17 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                 // click events of the drop menu
                 $(wndID + ' .select_rec_unit .option_s').each(function () {
                     $(this).click(function (e) {
-                        $(".select_rec_unit .sel").toggleClass("sel");
-                        $("." + this.className.split(" ")[4]).toggleClass("sel");
+                        $(wndID + ".select_rec_unit .sel").toggleClass("sel");
+                        $(wndID + "." + this.className.split(" ")[4]).toggleClass("sel");
 
                         unit = $(this).attr("name");
                         unit2 = ratio[unit].name;
-                        $('.dio_drop_rec_unit .caption').attr("name", unit);
-                        $('.dio_drop_rec_unit .caption').each(function () {
+                        $(wndID + '.dio_drop_rec_unit .caption').attr("name", unit);
+                        $(wndID + '.dio_drop_rec_unit .caption').each(function () {
                             this.innerHTML = unit2;
                         });
                         $($(this).parent().parent().get(0)).removeClass("open");
-                        $('.dio_drop_rec_unit .caption').change();
+                        $(wndID + '.dio_drop_rec_unit .caption').change();
                     });
                 });
                 $(wndID + ' .select_rec_perc .option').each(function () {
@@ -6360,12 +6363,12 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                         $(this).toggleClass("sel");
 
                         percent = $(this).attr("name");
-                        $('.dio_drop_rec_perc .caption').attr("name", percent);
-                        $('.dio_drop_rec_perc .caption').each(function () {
+                        $(wndID + '.dio_drop_rec_perc .caption').attr("name", percent);
+                        $(wndID + '.dio_drop_rec_perc .caption').each(function () {
                             this.innerHTML = Math.round(percent * 100) + "%";
                         });
                         $($(this).parent().parent().get(0)).removeClass("open")
-                        $('.dio_drop_rec_perc .caption').change();
+                        $(wndID + '.dio_drop_rec_perc .caption').change();
                     });
                 });
 
@@ -6438,19 +6441,19 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                 };
 
 
-                if ($('#town_capacity_wood .max').get(0)) { max_amount = parseInt($('#town_capacity_wood .max').get(0).innerHTML, 10); }
+                if ($(wndID + '#town_capacity_wood .max').get(0)) { max_amount = parseInt($(wndID + '#town_capacity_wood .max').get(0).innerHTML, 10); }
                 else { max_amount = 25500; }
 
                 $(wndID + '.caption').change(function (e) {
-                    if (!(($(this).attr('name') === unit) || ($(this).attr('name') === percent))) { $('.dio_rec_count').get(0).innerHTML = "(" + trade_count + ")"; }
+                    if (!(($(this).attr('name') === unit) || ($(this).attr('name') === percent))) { $(wndID + '.dio_rec_count').get(0).innerHTML = "(" + trade_count + ")"; }
 
                     var tmp = $(this).attr('name');
 
                     if ($(this).parent().attr('class').split(" ")[0] === "dio_drop_rec_unit") { unit = tmp; }
                     else { percent = tmp; }
-
                     var max = (max_amount - 100) / 1000;
-                    addTradeMarks(max * ratio[unit].w, max * ratio[unit].s, max * ratio[unit].i, "lime");
+                    console.log(88, wndID, max * ratio[unit].w)
+                    addTradeMarks(max * ratio[unit].w, max * ratio[unit].s, max * ratio[unit].i, "lime", wndID);
 
                     var part = (max_amount - 1000) * parseFloat(percent); // -1000 als Puffer (sonst Überlauf wegen Restressies, die nicht eingesetzt werden können, vorallem bei FS und Biremen)
                     var rArray = uw.ITowns.getTown(uw.Game.townId).getCurrentResources();
@@ -6459,21 +6462,93 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                     var wood = ratio[unit].w * part;
                     var stone = ratio[unit].s * part;
                     var iron = ratio[unit].i * part;
-
-                    if ((wood > rArray.wood) || (stone > rArray.stone) || (iron > rArray.iron) || ((wood + stone + iron) > tradeCapacity)) {
-                        wood = stone = iron = 0;
-                        $('.dio_drop_rec_perc .caption').css({ color: '#f00' });
-                    } else {
-                        $('.' + e.target.parentNode.parentNode.className + ' .dio_drop_rec_perc .caption').css({ color: '#000' });
+                    // added by maro
+                    // wenn der 'tmp' == 1 dann wurde 100% ausgewählt
+                    //if(tmp == 1) {
+                    //alert('100% wurde ausgewählt');
+                    var tmpgratio = ratio[unit].w + ratio[unit].s + ratio[unit].i
+                    wood = tradeCapacity / tmpgratio * ratio[unit].w;
+                    stone = tradeCapacity / tmpgratio * ratio[unit].s;
+                    iron = tradeCapacity / tmpgratio * ratio[unit].i;
+                    /*alert('folgende Daten sind vorhanden \n' +
+                     'transportkapacität: ' + tradeCapacity + '\n' +
+                     'name: ' + tmp + '\n' +
+                     'ratio Holz ??: ' + ratio[unit].w + '\n' +
+                     'ratio Stein: ' + ratio[unit].s + '\n' +
+                     'ratio Silber: ' + ratio[unit].i + '\n' +
+                    'rArray (Holz?): ' + rArray.wood);*/
+                    //added by vookus - traded immer prozentual zur gewünschten einheit auch wenn nicht genügen resi für ein volles lager vorhanden sind
+                    function addTEST(a, b, c) {
+                        let A, B, C, tmps = percent * 100;
+                        A = rArray[a] * percent;
+                        B = A / (ratio[unit][a.substring(0, 1)] * tmps) * tmps * ratio[unit][b.substring(0, 1)];
+                        C = A / (ratio[unit][a.substring(0, 1)] * tmps) * tmps * ratio[unit][c.substring(0, 1)];
+                        if (A > getRess(a) || B > getRess(b) || C > getRess(c)) {
+                            $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#f00' });
+                            A = B = C = 0
+                        }
+                        console.log(999, getRess(a))
+                        console.log(888, A > getRess(a))
+                        $(wndID + "#trade_type_" + a + " [type='text']").select().val(A).blur();
+                        $(wndID + "#trade_type_" + b + " [type='text']").select().val(B).blur();
+                        $(wndID + "#trade_type_" + c + " [type='text']").select().val(C).blur();
                     }
-                    $("#trade_type_wood [type='text']").select().val(wood).blur();
-                    $("#trade_type_stone [type='text']").select().val(stone).blur();
-                    $("#trade_type_iron [type='text']").select().val(iron).blur();
+                    function getRess(res_type) {
+                        if (!$(wndID + "#town_capacity_" + res_type).get(0)) return
+                        var res = {};
+                        res.selector = $(wndID + "#town_capacity_" + res_type);
+                        res.amounts = {
+                            curr: parseInt(res.selector.find(".curr").html()) || 0,
+                            curr2: parseInt(res.selector.find(".curr2").html().substring(3)) || 0,
+                            curr3: parseInt(res.selector.find(".curr3").html().substring(3)) || 0,
+                            max: parseInt(res.selector.find(".max").html()) || 0
+                        }
+                        res.needed = res.amounts.max - res.amounts.curr - res.amounts.curr2;
+                        console.log(res_type, res.needed)
+                        return res.needed;
+                    }
+                    $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#000' });
+                    if ((wood > rArray.wood) && (stone < rArray.stone) && (iron < rArray.iron)) {
+                        addTEST("wood", "stone", "iron")
+                    } else if ((wood < rArray.wood) && (stone > rArray.stone) && (iron < rArray.iron)) {
+                        addTEST("stone", "wood", "iron")
+                    } else if ((wood < rArray.wood) && (stone < rArray.stone) && (iron > rArray.iron)) {
+                        addTEST("iron", "stone", "wood")
+                    } else if ((wood > rArray.wood) && (stone < rArray.stone) && (iron > rArray.iron) && ((rArray.wood) * ratio[unit].w) < ((rArray.iron) * ratio[unit].i)) {
+                        addTEST("wood", "stone", "iron")
+                    } else if ((wood > rArray.wood) && (stone < rArray.stone) && (iron > rArray.iron) && ((rArray.wood) * ratio[unit].w) > ((rArray.iron) * ratio[unit].i)) {
+                        addTEST("iron", "stone", "wood")
+                    } else if ((wood < rArray.wood) && (stone > rArray.stone) && (iron > rArray.iron) && ((rArray.iron) * ratio[unit].i) < ((rArray.stone) * ratio[unit].s)) {
+                        addTEST("iron", "stone", "wood")
+                    } else if ((wood < rArray.wood) && (stone > rArray.stone) && (iron > rArray.iron) && ((rArray.iron) * ratio[unit].i) > ((rArray.stone) * ratio[unit].s)) {
+                        addTEST("stone", "wood", "iron")
+                    } else if ((wood > rArray.wood) && (stone > rArray.stone) && (iron < rArray.iron) && ((rArray.wood) * ratio[unit].w) > ((rArray.stone) * ratio[unit].s)) {
+                        addTEST("stone", "wood", "iron")
+                    } else if ((wood > rArray.wood) && (stone > rArray.stone) && (iron < rArray.iron) && ((rArray.wood) * ratio[unit].w) < ((rArray.stone) * ratio[unit].s)) {
+                        addTEST("wood", "stone", "iron")
+                    } else if ((wood > rArray.wood) && (stone > rArray.stone) && (iron > rArray.iron)) {
+                        wood = stone = iron = 0;
+                        $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#f00' });
+                    } else if ((wood < rArray.wood) && (stone < rArray.stone) && (iron < rArray.iron)) {
+                        if (wood * percent > getRess("wood") || stone * percent > getRess("stone") || iron * percent > getRess("iron")) {
+                            $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#f00' });
+                            wood = stone = iron = 0;
+                        }
+                        $(wndID + "#trade_type_wood [type='text']").select().val(wood * percent).blur();
+                        $(wndID + "#trade_type_stone [type='text']").select().val(stone * percent).blur();
+                        $(wndID + "#trade_type_iron [type='text']").select().val(iron * percent).blur();
+                    } else {
+                        $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#000' });
+                        wood = stone = iron = 0;
+                        $(wndID + "#trade_type_wood [type='text']").select().val(wood).blur();
+                        $(wndID + "#trade_type_stone [type='text']").select().val(stone).blur();
+                        $(wndID + "#trade_type_iron [type='text']").select().val(iron).blur();
+                    }
                 });
 
-                $('#trade_button').click(() => {
+                $(wndID + '#trade_button').click(() => {
                     trade_count++;
-                    $('.dio_rec_count').get(0).innerHTML = "(" + trade_count + ")";
+                    $(wndID + '.dio_rec_count').get(0).innerHTML = "(" + trade_count + ")";
                 });
 
                 $(wndID + '.dio_drop_rec_perc .caption').change();
@@ -6539,23 +6614,20 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
     /*******************************************************************************************************************************
      * ● Ressources marks
      *******************************************************************************************************************************/
-    function addTradeMarks(woodmark, stonemark, ironmark, color) {
-        var max_amount, limit, wndArray = uw.GPWindowMgr.getOpen(uw.Layout.wnd.TYPE_TOWN), wndID;
+    function addTradeMarks(woodmark, stonemark, ironmark, color, wndID) {
+        let max_amount, limit, wndArray = uw.GPWindowMgr.getOpen(uw.Layout.wnd.TYPE_TOWN);
         for (var e in wndArray) {
             if (wndArray.hasOwnProperty(e)) {
-                wndID = "#gpwnd_" + wndArray[e].getID() + " ";
                 if ($(wndID + '.town-capacity-indicator').get(0)) {
-
+                    if (!wndID) wndID = "#gpwnd_" + wndArray[e].getID() + " ";
                     max_amount = $(wndID + '.amounts .max').get(0).innerHTML;
 
-                    $('#trade_tab .c_' + color).each(function () {
-                        this.remove();
-                    });
+                    $(wndID + '#trade_tab .c_' + color).each(function () { this.remove(); });
 
-                    var progressBarList = $('#trade_tab .progress');
+                    var progressBarList = $(wndID + '#trade_tab .progress');
                     for (var i = 0; i < progressBarList.length; i++) {
                         var progressBar = progressBarList[i];
-                        if ($("p", progressBar).length < 3) {
+                        if ($(wndID + "p", progressBar).length < 3) {
                             if ($(progressBar).parent().get(0).id != "big_progressbar") {
                                 limit = 1000 * (242 / parseInt(max_amount, 10));
 
