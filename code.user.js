@@ -2,7 +2,7 @@
 // @name		DIO-TOOLS-David1327
 // @name:fr		DIO-TOOLS-David1327
 // @namespace	https://www.tuto-de-david1327.com/pages/info/dio-tools-david1327.html
-// @version		4.33.1
+// @version		4.33.2
 // @author		DIONY (changes and bug fixes by David1327)
 // @description Version 2023. DIO-Tools + Quack is a small extension for the browser game Grepolis. (counter, displays, smilies, trade options, changes to the layout)
 // @description:FR Version 2023. DIO-Tools + Quack est une petite extension du jeu par navigateur Grepolis. (compteur, affichages, smileys, options commerciales, modifications de la mise en page)
@@ -6484,8 +6484,8 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                         B = A / (ratio[unit][a.substring(0, 1)] * tmps) * tmps * ratio[unit][b.substring(0, 1)];
                         C = A / (ratio[unit][a.substring(0, 1)] * tmps) * tmps * ratio[unit][c.substring(0, 1)];
                         if (A > getRess(a) || B > getRess(b) || C > getRess(c)) {
-                            $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#f00' });
-                            A = B = C = 0
+                            $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#610fe5' });
+                            //A = B = C = 0
                         }
                         console.log(999, getRess(a))
                         console.log(888, A > getRess(a))
@@ -6531,8 +6531,8 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                         $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#f00' });
                     } else if ((wood < rArray.wood) && (stone < rArray.stone) && (iron < rArray.iron)) {
                         if (wood * percent > getRess("wood") || stone * percent > getRess("stone") || iron * percent > getRess("iron")) {
-                            $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#f00' });
-                            wood = stone = iron = 0;
+                            $(wndID + ' .dio_drop_rec_perc .caption').css({ color: '#610fe5' });
+                            //wood = stone = iron = 0;
                         }
                         $(wndID + "#trade_type_wood [type='text']").select().val(wood * percent).blur();
                         $(wndID + "#trade_type_stone [type='text']").select().val(stone * percent).blur();
