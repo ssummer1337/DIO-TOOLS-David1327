@@ -3971,6 +3971,7 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                 // Quacks Zentrier-Button verschieben
                 '#town_groups_list .jump_town { right: 36px !important; } ' +
                 // Population percentage
+                '#town_groups_list .pop_percent_all { position: absolute; right: 46px; top:0px; font-size: 0.7em; display:block !important;} ' +
                 '#town_groups_list .pop_percent { position: absolute; right: 6px; top:0px; font-size: 0.7em; display:block !important;} ' +
                 '#town_groups_list .full { color: green; } ' +
                 '#town_groups_list .threequarter { color: darkgoldenrod; } ' +
@@ -4004,29 +4005,46 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
             uw.layout_main_controller.sub_controllers[i].controller.town_groups_list_view.render = uw.layout_main_controller.sub_controllers[i].controller.town_groups_list_view.render_old;
 
             $('#dio_town_list').remove();
-            $('#town_groups_list .dio_icon_small, #town_groups_list .pop_percent').css({ display: 'none' });
+            $('#town_groups_list .dio_icon_small, #town_groups_list .pop_percent, #town_groups_list .pop_percent_all').css({ display: 'none' });
             $("#town_groups_list .town_group_town").unbind('mouseenter mouseleave');
         },
         change: () => {
             if (!$('#town_groups_list .dio_icon_small').get(0)) {
-                $("#town_groups_list .town_group_town").each(function () {
+                $("#town_groups_list .town_group").each(function () {
                     try {
-                        var town_item = $(this), town_id = town_item.attr('name'), townicon_div, percent_div = "", percent = -1, pop_space = "full";
+                        var totalPop = 0, totalTowns = 0;
 
-                        if (population[town_id]) { percent = population[town_id].percent; }
-                        if (percent < 75) { pop_space = "threequarter"; }
-                        if (percent < 50) { pop_space = "half"; }
-                        if (percent < 25) { pop_space = "quarter"; }
+                        $(".town_group_town", $(this)).each(function () {
+                            try {
+                                var town_item = $(this), town_id = town_item.attr('name'), townicon_div, percent_div = "", percent = -1, pop_space = "full";
+        
+                                if (population[town_id]) { percent = population[town_id].percent; }
+                                if (percent < 75) { pop_space = "threequarter"; }
+                                if (percent < 50) { pop_space = "half"; }
+                                if (percent < 25) { pop_space = "quarter"; }
+        
+                                if (!town_item.find('dio_icon_small').length) {
+                                    townicon_div = '<div class="dio_icon_small townicon_' + (manuTownTypes[town_id] || autoTownTypes[town_id] || "no") + '"></div>';
+                                    // TODO: Notlösung...
+                                    if (percent != -1) { percent_div = '<div class="pop_percent ' + pop_space + '">' + percent + '%</div>'; }
+                                    town_item.prepend(townicon_div + percent_div);
+                                    
+                                    totalPop += percent;
+                                    totalTowns++;
+                                }
+                            } catch (error) { errorHandling(error, "TownList.change"); }
+                        });
 
-                        if (!town_item.find('dio_icon_small').length) {
-                            townicon_div = '<div class="dio_icon_small townicon_' + (manuTownTypes[town_id] || autoTownTypes[town_id] || "no") + '"></div>';
-                            // TODO: Notlösung...
-                            if (percent != -1) { percent_div = '<div class="pop_percent ' + pop_space + '">' + percent + '%</div>'; }
-                            town_item.prepend(townicon_div + percent_div);
+                        var totalPercent = Math.round(totalPop / totalTowns), total_pop_space = "full";
+                        if (totalPercent < 75) { total_pop_space = "threequarter"; }
+                        if (totalPercent < 50) { total_pop_space = "half"; }
+                        if (totalPercent < 25) { total_pop_space = "quarter"; }
+
+                        if (!isNaN(totalPercent)) {
+                            $(".name", this).prepend('<div class="pop_percent_all ' + total_pop_space + '">' + totalPercent + '%</div>');
                         }
                     } catch (error) { errorHandling(error, "TownList.change"); }
                 });
-
             }
 
             // Hover Effect for Quacks Tool:
@@ -4182,6 +4200,10 @@ function DIO_GAME(dio_version, gm, DATA, time_a, url_dev) {
                                     popPlow = townArray[town].getResearches().attributes.plow ? 200 : 0,
                                     popFactor = townArray[town].getBuildings().getBuildingLevel("thermal") ? 1.1 : 1.0, // Thermal
                                     popExtra = townArray[town].getPopulationExtra();
+
+                                if (townArray[town].god() == "aphrodite") {
+                                    popMax += townArray[town].buildings().getBuildingLevel("farm") * 5;
+                                }
 
                                 for (var b in levelArray) {
                                     if (levelArray.hasOwnProperty(b)) {
